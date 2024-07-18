@@ -1,15 +1,15 @@
 pipeline {
   agent {
     docker {
-      image 'dabossmand213/maven-abhishek-docker-agent:v1'
-      args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
-    }
+      image 'dabossmand213/maven-docker-agent:v1'
+      args '-u root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
+}
   }
   stages {
     stage('Checkout') {
       steps {
         sh 'echo passed'
-        //git branch: 'main', url: 'https://github.com/DaBossManD/Jenkins-Zero-To-Hero.git'
+        git branch: 'main', url: 'https://github.com/DaBossManD/Jenkins-Zero-To-Hero.git'
       }
     }
     stage('Build and Test') {
@@ -32,7 +32,7 @@ pipeline {
     stage('Build and Push Docker Image') {
       environment {
         DOCKER_IMAGE = "dabossmand213/ultimate-cicd:${BUILD_NUMBER}"
-        // DOCKERFILE_LOCATION = "java-maven-sonar-argocd-helm-k8s/spring-boot-app/Dockerfile"
+        DOCKERFILE_LOCATION = "java-maven-sonar-argocd-helm-k8s/spring-boot-app/Dockerfile"
         REGISTRY_CREDENTIALS = credentials('docker-cred')
       }
       steps {
